@@ -10,14 +10,18 @@ exports.index = function(req, res){
 exports.api = function(req, res) {
 	var request = require("request"),
     	api = 'http://api.imagga.com',
-    	api_key = 'acc_4d1a766f8fd64d4',
+    	api_key = 'acc_7c64f06c8eaedfa',
 
-    	classifier_id = 'mobile_photos_sliki_v7',
+    	classifiers = {
+    		default_classifier_id: 'carpet_pattern_v4',
+    		custom_classifier_id: 'inspire_me'
+    	},
 
     	image = req.body.urls;
+    	classifier = classifiers[req.body.classifier] || classifiers.default_classifier_id;
 
 	request({
-	    url: api + '/draft/classify/' + classifier_id + '?api_key=' + api_key,
+	    url: api + '/draft/classify/' + classifier + '?api_key=' + api_key,
 	    form: {
 	    	urls: image
 	    },

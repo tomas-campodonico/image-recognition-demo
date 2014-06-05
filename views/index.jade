@@ -3,6 +3,10 @@ extends layout
 block content
 	img#logo(src='/img/logo.png', alt='Thomas Cook')
 	h2 Image recognition demo
+	select#classifier
+		option(selected='', value='default_classifier_id') Default Classifier
+		option(value='custom_classifier_id') Custom Classifier
+
 	input(type='button', value='Categorize current image!', onclick='javascript:categorize()')
 	img#img
 	br

@@ -24,7 +24,7 @@ function categorize() {
 			}
 	  	}
 	};
-	xhr.send("urls=" + image);
+	xhr.send("classifier=" + $('#classifier').val() + "&urls=" + image);
 
 	$('#loading-bar').removeClass('hidden');
 	$('input').prop("disabled", true);
