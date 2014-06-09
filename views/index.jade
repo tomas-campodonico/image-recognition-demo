@@ -3,27 +3,24 @@ extends layout
 block content
 	img#logo(src='/img/logo.png', alt='Thomas Cook')
 	h2 Image recognition demo
-	select#classifier
+	select#classifier.hidden
 		option(selected='', value='default_classifier_id') Default Classifier
 		option(value='default_classifier_id_2') Default Classifier 2
 		option(value='custom_classifier_id') Custom Classifier
 
-	input(type='button', value='Categorize current image!', onclick='javascript:categorize()')
 	img#img
 	br
 	input#file(type='text', value='http://www.aedas.com/Content/images/pageimages/Hilton-Hotel-Liverpool-UK-4.jpg')
-	input.load(type='button', value='Load', onclick='javascript:changePicture()')
+	input.load(type='button', value='Preview', onclick='javascript:changePicture()')
+	input(type='button', value='Inspire!', onclick='javascript:categorize()')
 
 	| Sample images:
 	input(type='button', value='Image 1', onclick='javascript:changePicture(\'http://www.aedas.com/Content/images/pageimages/Hilton-Hotel-Liverpool-UK-4.jpg\')')
 	input(type='button', value='Image 2', onclick='javascript:changePicture(\'http://carillon-beach.com/images/plates/large/beach-1.jpg\')')
 	input(type='button', value='Image 3', onclick='javascript:changePicture(\'http://wallpaphd.com/wp-content/uploads/2013/03/Hilton-Hotel-Liverpool-UK.jpg\')')
+	input(type='button', value='Image 4', onclick='javascript:changePicture(\'http://www.hdwallpapersarena.com/wp-content/uploads/2012/10/Toy-Story-3-disney-13603192-1024-768.jpg\')')
 	#loading-bar.hidden
-		| Categorizing your image. Please wait...
-	#results.hidden
-		h4 Results
-		a#close-modal(onclick='javascript:dismissModal()') Close
-		ul#result-list
+		| Looking a place for your best holidays...
 	script(src='http://code.jquery.com/jquery-2.1.1.min.js')
 	script(src='/js/main.js')
 

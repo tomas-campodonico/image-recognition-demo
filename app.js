@@ -27,6 +27,7 @@ app.configure('development', function(){
 });
 
 app.get('/', routes.index);
+app.get('/results/:id', routes.results);
 app.post('/', routes.api);
 
 http.createServer(app).listen(app.get('port'), function(){

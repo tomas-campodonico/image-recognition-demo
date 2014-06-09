@@ -1,0 +1,20 @@
+extends layout
+
+block content
+	img#logo(src='/img/logo.png', alt='Thomas Cook')
+	h2 Image recognition demo
+	a(href='http://localhost:3000') Back to main page
+
+	ul#results
+		- if (results) {
+			h4 Our recommendations based on the photo you choose are...
+			- each result in results
+				li
+					h4=result.name
+					img(src=result.pic)
+		- } else {
+			h4 Sorry. We could not find any holiday of your taste.
+		- }
+
+	script(src='http://code.jquery.com/jquery-2.1.1.min.js')
+

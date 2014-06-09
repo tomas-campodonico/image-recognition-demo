@@ -10,18 +10,8 @@ function categorize() {
 		$('#loading-bar').addClass('hidden');
 		$('input').prop("disabled", false);
 		if (this.readyState == 4) {
-			//error
-			if (JSON.parse(this.responseText)[0].unsuccessful) {
-				alert('There was a problem loading the image. Please try again');
-			} else {
-				var tags = JSON.parse(this.responseText)[0].tags;
-				$('#result-list').empty();
-		    	for (var i = 0; i < tags.length; i++) {
-		    		$('#result-list').append('<li><span class="cat-name">' +
-		    			tags[i].name + '</span> - <span class="cat-confidence">' + tags[i].confidence + '</span></li>');
-		    	}
-		    	$('#results').removeClass('hidden');
-			}
+			console.log(this.responseText);
+			window.location.href += 'results/' + this.responseText;
 	  	}
 	};
 	xhr.send("classifier=" + $('#classifier').val() + "&urls=" + image);
@@ -37,10 +27,6 @@ function changePicture(src) {
 		$('#file').val(src);
 	}
 	$('#img').attr('src', $('#file').val());
-}
-
-function dismissModal() {
-	$('#results').addClass('hidden');
 }
 
 changePicture('http://www.aedas.com/Content/images/pageimages/Hilton-Hotel-Liverpool-UK-4.jpg');
