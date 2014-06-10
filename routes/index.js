@@ -25,8 +25,8 @@ exports.api = function(req, res) {
 
     	classifiers = {
     		default_classifier_id: 'mobile_photos_sliki_v7',
-    		default_classifier_id_2: 'carpet_pattern_v4',
-    		custom_classifier_id: 'thomas_cook'
+    		custom_classifier_id: 'inspire_me',
+    		default_classifier_id_2: 'thomas_cook',
     	},
 
     	image = req.body.urls;
@@ -74,7 +74,7 @@ exports.api = function(req, res) {
 					    res.end(finalURL);
 			    	});
 				} else {
-					if (parsed[0].unsuccessful) {
+					if ((parsed.status && parsed.status === 'error') && (parsed[0].unsuccessful)) {
 						numberOfAttempts++;
 						if (numberOfAttempts < 5) {
 							console.log('Sending again');
@@ -100,7 +100,7 @@ exports.api = function(req, res) {
 
 exports.results = function(req, res) {
 	var resArray = {
-		'interior_objects': [{
+		'confortable rooms': [{
 			name: 'Comfortable Room 1',
 			pic: 'http://3.bp.blogspot.com/-3p21KJxpWKw/T9ncU0RQPoI/AAAAAAAADh4/I5iA0r4qf70/s1600/standard_room_twin_bed.jpg'
 		}, {
@@ -113,7 +113,7 @@ exports.results = function(req, res) {
 			name: 'Comfortable Room 4',
 			pic: 'http://nigerianmaritimedirectory.com/wp-content/uploads/2013/06/comfortable-room-design-image-915x683.jpg'
 		}],
-		'beaches_seaside': [{
+		'beach': [{
 			name: 'Rio de Janeiro',
 			pic: 'http://upload.wikimedia.org/wikipedia/commons/d/d2/Rio_de_Janeiro_Ipanema_%26_Leblon_173_Feb_2006.JPG'
 		}, {
@@ -126,18 +126,44 @@ exports.results = function(req, res) {
 			name: 'Miami',
 			pic: 'http://media-cdn.tripadvisor.com/media/photo-s/03/d4/40/8c/miami.jpg'
 		}],
-		'streetview_architecture': [{
-			name: 'Sheraton Hotel - Mar del Plata',
-			pic: 'http://images.bestday.com/_lib/vimages/mar-del-plata-argentina/hotels/sheraton-mar-del-plata/fachada_g.jpg'
+		'spa': [{
+			name: 'Palazzo Arzaga - Brescia',
+			pic: 'http://www.palazzoarzaga.com/wp-content/uploads/2012/05/7-Spa-Suite.jpg'
 		}, {
-			name: 'Corregidor Hotel - La Plata',
-			pic: 'http://www.reservas.net/prvimagen/387_prin.jpg'
+			name: 'Miyako Inn - Los Angeles',
+			pic: 'http://www.miyakoinn.com/bpimages/headers/header_spa.jpg'
 		}, {
-			name: 'Hilton Hotel - London',
-			pic: 'http://media-cdn.tripadvisor.com/media/photo-s/01/d6/de/dd/exterior-shot.jpg'
+			name: 'Kerry Hotel - Shangai',
+			pic: 'http://www.cntraveler.com/hot-list/2012/spas/kerry-hotel-spa-shanghai-china/_jcr_content/par/cn_contentwell/par-main/cn_colctrl/par-col1/cn_rotator/item0.size.kerry-hotel-pudong-spa-shanghai-china-1.jpg'
 		}, {
-			name: 'Sheraton Hotel - London',
-			pic: 'https://yourmotelreservations.com/propertyimages/165052/sheraton_skyline_hotel_london_heathrow_photo18_hayes_unitedkingdom.jpg'
+			name: 'Renaissance Glendale Hotel & Spa',
+			pic: 'http://imgsg.jobing.com/company/images/49495/Spa_Botanica_Hydro_Therapy_Room.jpg'
+		}],
+		'waterparks': [{
+			name: 'Funtasia Waterpark - Drogheda',
+			pic: 'http://media-cdn.tripadvisor.com/media/photo-s/02/50/b3/75/slip-soak-splash.jpg'
+		}, {
+			name: 'Aqua Sol Holiday Village',
+			pic: 'http://images.hotels4u.com/Travel_Images/Resort_115/Building_5760/pool5263_AT_THE_aqua_sol_holiday_village.JPG'
+		}, {
+			name: 'Aqualand',
+			pic: 'http://www.aqualand-corfu.com/images/gallery/33.jpg'
+		}, {
+			name: 'Walt Disney World',
+			pic: 'http://attractionsmagazine.com/wp-content/uploads/2012/07/ap2-85-640x428-550x367.jpg'
+		}],
+		'big pools': [{
+			name: 'The Ballantyne Hotel',
+			pic: 'http://www.theballantynehotel.com/images/pool_005.jpg'
+		}, {
+			name: 'Holiday Check',
+			pic: 'http://www.holidaycheck.com/data/urlaubsbilder/images/15/1160495161.jpg'
+		}, {
+			name: 'Elounda Beach Hotel',
+			pic: 'http://www.allcretehotels.com/hotel/hotels/elounda_beach_hotel_outdoor_pool.jpg'
+		}, {
+			name: 'Big Pool Hotel',
+			pic: 'http://www.smartdestinations.com/blog/wp-content/uploads/2011/08/hotel-pools.jpg'
 		}]
 	}
 	res.render('results', { results: resArray[req.params.id] });

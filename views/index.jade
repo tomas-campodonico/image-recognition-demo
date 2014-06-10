@@ -3,10 +3,10 @@ extends layout
 block content
 	img#logo(src='/img/logo.png', alt='Thomas Cook')
 	h2 Image recognition demo
-	select#classifier.hidden
-		option(selected='', value='default_classifier_id') Default Classifier
-		option(value='default_classifier_id_2') Default Classifier 2
-		option(value='custom_classifier_id') Custom Classifier
+	select#classifier
+		option(value='default_classifier_id') Default Classifier
+		option(value='default_classifier_id_2') Thomas Cook
+		option(selected='', value='custom_classifier_id') Inspire Me
 
 	img#img
 	br
@@ -15,9 +15,9 @@ block content
 	input(type='button', value='Inspire!', onclick='javascript:categorize()')
 
 	| Sample images:
-	input(type='button', value='Image 1', onclick='javascript:changePicture(\'http://www.aedas.com/Content/images/pageimages/Hilton-Hotel-Liverpool-UK-4.jpg\')')
+	input(type='button', value='Image 1', onclick='javascript:changePicture(\'http://www.dimensionsinfo.com/wp-content/uploads/2010/02/Hotel-Room.jpg\')')
 	input(type='button', value='Image 2', onclick='javascript:changePicture(\'http://carillon-beach.com/images/plates/large/beach-1.jpg\')')
-	input(type='button', value='Image 3', onclick='javascript:changePicture(\'http://wallpaphd.com/wp-content/uploads/2013/03/Hilton-Hotel-Liverpool-UK.jpg\')')
+	input(type='button', value='Image 3', onclick='javascript:changePicture(\'http://www.dwtickets.com/v/blog/uploaded_images/Aquatica-Waterpark-Orlando-735780.jpg\')')
 	input(type='button', value='Image 4', onclick='javascript:changePicture(\'http://www.hdwallpapersarena.com/wp-content/uploads/2012/10/Toy-Story-3-disney-13603192-1024-768.jpg\')')
 	#loading-bar.hidden
 		| Looking a place for your best holidays...
