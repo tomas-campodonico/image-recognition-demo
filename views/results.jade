@@ -11,8 +11,8 @@ block content
 		ul.categories.hidden
 			- each cat in categories
 				li
-					span.catName=cat.name + ' - '
-					span.catPercentage=cat.confidence + '%'
+					span.catName=cat.label + ' - '
+					span.catPercentage=cat.probability + '%'
 	- } else {
 		h1 There was no category match.
 	- }

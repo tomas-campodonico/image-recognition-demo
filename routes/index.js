@@ -2,7 +2,7 @@
 
 function results(req, res, body) {
 	var resArray = {
-		'confortable rooms': [{
+		'rooms': [{
 			name: 'Comfortable Room 1',
 			pic: 'http://3.bp.blogspot.com/-3p21KJxpWKw/T9ncU0RQPoI/AAAAAAAADh4/I5iA0r4qf70/s1600/standard_room_twin_bed.jpg'
 		}, {
@@ -75,10 +75,11 @@ function results(req, res, body) {
 	console.log('Results');
 
 	if (body) {
-		categories = JSON.parse(body)[0].tags;
+		//{"labels": [{"raw_label": "waterparks", "probability": "100.0", "label": "waterparks"}], "results": []}
+		categories = JSON.parse(body).labels;
 
-		if (parseInt(categories[0].confidence, 10) > 60) {
-			resultCategory = categories[0].name;
+		if (parseInt(categories[0].probability, 10) > 60) {
+			resultCategory = categories[0].label;
 		}
 
 		options.results = resArray[resultCategory];
@@ -95,25 +96,16 @@ exports.index = function(req, res){
 
 exports.api = function(req, res) {
 	var request = require("request"),
-    	api = 'http://api.imagga.com',
-    	api_key = 'acc_7c64f06c8eaedfa',
-
-    	classifiers = {
-    		default_classifier_id: 'mobile_photos_sliki_v7',
-    		custom_classifier_id: 'inspire_me',
-    		default_classifier_id_2: 'thomas_cook',
-    	},
+    	api = 'http://93.152.158.212:8080',
     	image = req.query.urls;
-    	classifier = classifiers[req.query.classifier] || classifiers.default_classifier_id,
+    	classifier = '183d80f62636f73ec3d4a0e3f0de34d5',
     	numberOfAttempts = 0;
 
 	var sendRequest = function() {
+		//http://93.152.158.212:8080/classify/183d80f62636f73ec3d4a0e3f0de34d5/?url=<yourimageurl>
 		request({
-		    url: api + '/draft/classify/' + classifier + '?api_key=' + api_key,
-		    form: {
-		    	urls: image
-		    },
-		    method: "POST",
+		    url: api + '/classify/' + classifier + '/?url=' + image,
+		    method: "GET",
 		    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 		}, function (error, response, body) {
 		    if (error) {
@@ -127,40 +119,20 @@ exports.api = function(req, res) {
 
 		    try {
 			    var parsed = JSON.parse(body);
-			    if (parsed.msg) {
-			    	console.log('Sending GET...');
-			    	request({
-			    		url: api + '/draft/classify/result/' + body.ticket_id + '?api_key=' + api_key,
-			    		method: 'GET',
-			    		headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-			    	}, function(finalError, finalResponse, finalBody) {
-			    		if (finalError) {
-					        console.error(finalError);
-					        return
-					    }
-
-					    console.log("\n<<Status>>", finalResponse.statusCode);
-					    console.log("<<Headers>>", JSON.stringify(finalResponse.headers));
-					    console.log("<<Response>>", finalBody);
-
-					    results(req, res, finalBody);
-			    	});
+			    if (parsed.status.type === 'success') {
+					results(req, res, body);
 				} else {
-					if ((parsed.status && parsed.status === 'error') && (parsed[0].unsuccessful)) {
-						numberOfAttempts++;
-						if (numberOfAttempts < 5) {
-							console.log('Sending again');
-							sendRequest();
-						} else {
-							res.end();
-							return
-						}
+					numberOfAttempts++;
+					if (numberOfAttempts < 5) {
+						console.log('There was a problem. Sending request again...');
+						sendRequest();
 					} else {
-						results(req, res, body);
+						res.end();
+						return
 					}
 				}
 			} catch (e) {
-				console.error('There was an error trying to parse the response.')
+				console.error('There was an error.')
 				res.end();
 			}
 	    });
