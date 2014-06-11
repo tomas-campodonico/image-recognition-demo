@@ -89,6 +89,31 @@ input[type="button"], select {
     margin: 0 0 5px 0;
 }
 
-span.cat-name {
+span.catName {
 	font-weight: bold;
+}
+
+ul.categories {
+    border: solid 1px;
+    box-sizing: border-box;
+    padding: 10px;
+    text-align: left;
+    box-shadow: 3px 3px 3px;
+    background: rgb(196, 150, 100);
+}
+
+ul.categories li {
+    list-style: none;
+    padding: 6px 0 6px 0;
+}
+
+a.back {
+    position: absolute;
+    top: 22px;
+    left: 10px;
+    text-decoration: none;
+}
+
+h1 {
+    margin: 10px;
 }

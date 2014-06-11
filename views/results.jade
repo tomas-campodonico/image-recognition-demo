@@ -3,7 +3,19 @@ extends layout
 block content
 	img#logo(src='/img/logo.png', alt='Thomas Cook')
 	h2 Image recognition demo
-	a(href='/') Back to main page
+	a.back(href='/') < Back
+
+	- if (resultCategory) {
+		h1=resultCategory
+		input(type='button', value='Show/Hide categories', onclick='javascript:showResults()')
+		ul.categories.hidden
+			- each cat in categories
+				li
+					span.catName=cat.name + ' - '
+					span.catPercentage=cat.confidence + '%'
+	- } else {
+		h1 There was no category match.
+	- }
 
 	ul#results
 		- if (results) {
@@ -13,8 +25,8 @@ block content
 					h4=result.name
 					img(src=result.pic)
 		- } else {
-			h4 Sorry. We could not find any holiday of your taste.
+			h4 Sorry. We could not find any holiday for your taste.
 		- }
 
 	script(src='http://code.jquery.com/jquery-2.1.1.min.js')
-
+	script(src='/js/main.js')

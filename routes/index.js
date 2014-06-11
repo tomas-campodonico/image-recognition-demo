@@ -1,104 +1,6 @@
 
-/*
- * GET home page.
- */
 
-function redirectToResults(body) {
-	var url = 'no-match',
-		tags = JSON.parse(body)[0].tags;
-
-	if (parseInt(tags[0].confidence, 10) > 60) {
-		url = tags[0].name;
-	}
-
-	return url;
-}
-
-exports.index = function(req, res){
-  res.render('index', { title: 'Image Recognition Demo' });
-};
-
-exports.api = function(req, res) {
-	var request = require("request"),
-    	api = 'http://api.imagga.com',
-    	api_key = 'acc_7c64f06c8eaedfa',
-
-    	classifiers = {
-    		default_classifier_id: 'mobile_photos_sliki_v7',
-    		custom_classifier_id: 'inspire_me',
-    		default_classifier_id_2: 'thomas_cook',
-    	},
-
-    	image = req.body.urls;
-    	classifier = classifiers[req.body.classifier] || classifiers.default_classifier_id,
-    	numberOfAttempts = 0;
-
-	var sendRequest = function() {
-		request({
-		    url: api + '/draft/classify/' + classifier + '?api_key=' + api_key,
-		    form: {
-		    	urls: image
-		    },
-		    method: "POST",
-		    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-		}, function (error, response, body) {
-		    if (error) {
-		        console.error(error);
-		        return
-		    }
-
-		    console.log("\n<<Status>>", response.statusCode);
-		    console.log("<<Headers>>", JSON.stringify(response.headers));
-		    console.log("<<Response>>", body);
-
-		    try {
-			    var parsed = JSON.parse(body);
-			    if (parsed.msg) {
-			    	console.log('Sending GET...');
-			    	request({
-			    		url: api + '/draft/classify/result/' + body.ticket_id + '?api_key=' + api_key,
-			    		method: 'GET',
-			    		headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-			    	}, function(finalError, finalResponse, finalBody) {
-			    		if (finalError) {
-					        console.error(finalError);
-					        return
-					    }
-
-					    console.log("\n<<Status>>", finalResponse.statusCode);
-					    console.log("<<Headers>>", JSON.stringify(finalResponse.headers));
-					    console.log("<<Response>>", finalBody);
-
-					    var finalURL = redirectToResults(finalBody);
-
-					    res.end(finalURL);
-			    	});
-				} else {
-					if ((parsed.status && parsed.status === 'error') && (parsed[0].unsuccessful)) {
-						numberOfAttempts++;
-						if (numberOfAttempts < 5) {
-							console.log('Sending again');
-							sendRequest();
-						} else {
-							res.end();
-							return
-						}
-					} else {
-						var finalURL = redirectToResults(body);
-						res.end(finalURL);
-					}
-				}
-			} catch (e) {
-				console.error('There was an error trying to parse the response.')
-				res.end();
-			}
-	    });
-	};
-
-	sendRequest();
-}
-
-exports.results = function(req, res) {
+function results(req, res, body) {
 	var resArray = {
 		'confortable rooms': [{
 			name: 'Comfortable Room 1',
@@ -165,6 +67,104 @@ exports.results = function(req, res) {
 			name: 'Big Pool Hotel',
 			pic: 'http://www.smartdestinations.com/blog/wp-content/uploads/2011/08/hotel-pools.jpg'
 		}]
+	},
+	options = {},
+	resultCategory = null,
+	categories = [];
+
+	console.log('Results');
+
+	if (body) {
+		categories = JSON.parse(body)[0].tags;
+
+		if (parseInt(categories[0].confidence, 10) > 60) {
+			resultCategory = categories[0].name;
+		}
+
+		options.results = resArray[resultCategory];
+		options.resultCategory = resultCategory;
+		options.categories = categories;
 	}
-	res.render('results', { results: resArray[req.params.id] });
+	console.log(options);
+	res.render('results', options);
+}
+
+exports.index = function(req, res){
+  res.render('index', { title: 'Image Recognition Demo' });
+};
+
+exports.api = function(req, res) {
+	var request = require("request"),
+    	api = 'http://api.imagga.com',
+    	api_key = 'acc_7c64f06c8eaedfa',
+
+    	classifiers = {
+    		default_classifier_id: 'mobile_photos_sliki_v7',
+    		custom_classifier_id: 'inspire_me',
+    		default_classifier_id_2: 'thomas_cook',
+    	},
+    	image = req.query.urls;
+    	classifier = classifiers[req.query.classifier] || classifiers.default_classifier_id,
+    	numberOfAttempts = 0;
+
+	var sendRequest = function() {
+		request({
+		    url: api + '/draft/classify/' + classifier + '?api_key=' + api_key,
+		    form: {
+		    	urls: image
+		    },
+		    method: "POST",
+		    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+		}, function (error, response, body) {
+		    if (error) {
+		        console.error(error);
+		        return
+		    }
+
+		    console.log("\n<<Status>>", response.statusCode);
+		    console.log("<<Headers>>", JSON.stringify(response.headers));
+		    console.log("<<Response>>", body);
+
+		    try {
+			    var parsed = JSON.parse(body);
+			    if (parsed.msg) {
+			    	console.log('Sending GET...');
+			    	request({
+			    		url: api + '/draft/classify/result/' + body.ticket_id + '?api_key=' + api_key,
+			    		method: 'GET',
+			    		headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+			    	}, function(finalError, finalResponse, finalBody) {
+			    		if (finalError) {
+					        console.error(finalError);
+					        return
+					    }
+
+					    console.log("\n<<Status>>", finalResponse.statusCode);
+					    console.log("<<Headers>>", JSON.stringify(finalResponse.headers));
+					    console.log("<<Response>>", finalBody);
+
+					    results(req, res, finalBody);
+			    	});
+				} else {
+					if ((parsed.status && parsed.status === 'error') && (parsed[0].unsuccessful)) {
+						numberOfAttempts++;
+						if (numberOfAttempts < 5) {
+							console.log('Sending again');
+							sendRequest();
+						} else {
+							res.end();
+							return
+						}
+					} else {
+						results(req, res, body);
+					}
+				}
+			} catch (e) {
+				console.error('There was an error trying to parse the response.')
+				res.end();
+			}
+	    });
+	};
+
+	sendRequest();
 }
